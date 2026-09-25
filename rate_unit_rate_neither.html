@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rate, Unit Rate, or Neither?</title>
+<style>
+:root{--ink:#172554;--blue:#dbeafe;--green:#dcfce7;--pink:#fce7f3;--purple:#ede9fe;--line:#cbd5e1}
+*{box-sizing:border-box}body{margin:0;padding:18px;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:#f8fafc}
+main{max-width:900px;margin:auto}.hero{background:linear-gradient(110deg,#dbeafe,#eff6ff);border-radius:18px;padding:24px;text-align:center;margin-bottom:16px}
+h1{font-size:clamp(1.6rem,4vw,2.5rem);margin:0 0 8px}.sub{margin:0;color:#334155}
+.defs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}.def{padding:15px;border-radius:14px;text-align:center}.def h2{margin:0 0 7px;font-size:1.2rem}.def p{margin:0;font-size:.95rem;line-height:1.4}.rate{background:var(--blue)}.unit{background:var(--green)}.neither{background:var(--pink)}
+.panel{background:white;border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 3px 12px #0f172a0a}
+.topline{display:flex;justify-content:space-between;gap:10px;font-weight:bold;margin-bottom:12px}.track{height:12px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin-bottom:22px}.fill{height:100%;width:0;background:#2563eb;transition:width .2s}
+.prompt{background:var(--purple);border:1px solid #c4b5fd;border-radius:12px;padding:26px 16px;text-align:center;font-size:clamp(1.15rem,3vw,1.5rem);font-weight:bold;min-height:105px;display:grid;place-items:center;margin-bottom:18px}
+.answers{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.answers button{padding:15px 8px;font-weight:bold;font-size:1rem;border:2px solid transparent;border-radius:10px;cursor:pointer;color:var(--ink)}.answers button:nth-child(1){background:var(--blue);border-color:#93c5fd}.answers button:nth-child(2){background:var(--green);border-color:#86efac}.answers button:nth-child(3){background:var(--pink);border-color:#f9a8d4}.answers button:disabled{opacity:.75;cursor:default}
+.feedback{margin-top:16px;padding:14px;border-radius:10px;background:#f1f5f9;min-height:52px;line-height:1.45}.feedback.good{background:#dcfce7}.feedback.bad{background:#fee2e2}
+.controls{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;align-items:center}.controls button{border:1px solid var(--line);border-radius:10px;padding:11px 15px;background:#f1f5f9;color:var(--ink);font-weight:bold;cursor:pointer}.controls .primary{background:#1d4ed8;color:white;border-color:#1d4ed8}.spacer{flex:1}
+.answerkey{display:none;margin-top:18px;max-height:420px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:12px}.answerkey.show{display:block}.keyrow{padding:8px 0;border-bottom:1px solid #e2e8f0;font-size:.92rem}.tips{margin-top:16px;background:var(--green);border-radius:14px;padding:16px;line-height:1.5}.hidden{display:none!important}
+@media(max-width:620px){body{padding:10px}.defs{grid-template-columns:1fr}.answers{grid-template-columns:1fr}.topline{font-size:.9rem}.panel{padding:14px}.prompt{padding:20px 12px}}
+</style></head>
+<body><main>
+<header class="hero"><h1>Rate, Unit Rate, or Neither?</h1><p class="sub">Practice • Learn • Check Your Understanding</p></header>
+<section class="defs">
+<div class="def rate"><h2>Rate</h2><p>Compares two quantities with different units.<br><em>Example: 150 miles in 3 hours</em></p></div>
+<div class="def unit"><h2>Unit Rate</h2><p>A rate with a 1 in the second quantity.<br><em>Example: 50 miles per hour</em></p></div>
+<div class="def neither"><h2>Neither</h2><p>Does not compare two quantities with different units.<br><em>Example: 120 miles</em></p></div>
+</section>
+<section class="panel">
+<div class="topline"><span id="count">Question 1 of 60</span><span id="score">Score: 0/0</span></div>
+<div class="track"><div class="fill" id="fill"></div></div>
+<div class="prompt" id="prompt" aria-live="polite">A bus travels 240 miles in 4 hours.</div>
+<div class="answers" id="answers">
+<button data-answer="Rate">Rate</button><button data-answer="Unit rate">Unit rate</button><button data-answer="Neither">Neither</button>
+</div>
+<div class="feedback" id="feedback" aria-live="polite">Choose an answer to see feedback.</div>
+<div class="controls">
+<button id="prev">← Previous</button><button class="primary" id="next">Next Question →</button>
+<button id="reset">↻ Reset</button><button id="shuffle">⤨ Shuffle</button><span class="spacer"></span><button id="togglekey">Show Answer Key</button>
+</div>
+<div id="answerkey" class="answerkey"></div>
+</section>
+<section class="tips"><strong>💡 Tips for success</strong><ul>
+<li>Look for two different units, such as miles and hours or dollars and items.</li>
+<li>A unit rate has a 1 in the second quantity, such as “per 1 hour.”</li>
+<li>If there is only one quantity, or the units are the same, choose Neither.</li>
+<li>“Per,” “each,” and “for every” can signal a unit rate, but check the quantities.</li>
+</ul></section>
+</main>
+<script>
+const data = [
+["A bus travels 240 miles in 4 hours.","Rate","It compares miles and hours, with 4 hours rather than 1."],
+["A student reads 12 pages per minute.","Unit rate","The rate is expressed for 1 minute."],
+["A bottle holds 2 liters.","Neither","This describes capacity only, not a comparison of two different units."],
+["Five notebooks cost $12.50.","Rate","It compares dollars and notebooks, with 5 notebooks rather than 1."],
+["A worker earns $15 per hour.","Unit rate","The rate is expressed for 1 hour."],
+["A car travels 120 miles.","Neither","This gives a distance only."],
+["A machine makes 84 parts in 7 minutes.","Rate","It compares parts and minutes, with 7 minutes rather than 1."],
+["A printer produces 30 pages per minute.","Unit rate","The rate is expressed for 1 minute."],
+["A movie lasts 105 minutes.","Neither","This gives a duration only."],
+["A runner travels 6 miles in 2 hours.","Rate","It compares miles and hours, with 2 hours rather than 1."],
+["A cyclist travels 18 miles per hour.","Unit rate","The rate is expressed for 1 hour."],
+["A classroom has 30 students.","Neither","This gives a count only."],
+["A recipe uses 4 cups of flour for 3 batches.","Rate","It compares cups and batches, with 3 batches rather than 1."],
+["A recipe uses 2.5 cups of sugar per batch.","Unit rate","The amount is given for 1 batch."],
+["A box contains 24 crayons.","Neither","This gives a count only."],
+["A faucet fills 18 gallons in 6 minutes.","Rate","It compares gallons and minutes, with 6 minutes rather than 1."],
+["A faucet fills 4 gallons per minute.","Unit rate","The rate is expressed for 1 minute."],
+["A dog weighs 18 kilograms.","Neither","This gives a weight only."],
+["A student earns $42 for 6 hours of work.","Rate","It compares dollars and hours, with 6 hours rather than 1."],
+["A plane travels 550 miles per hour.","Unit rate","The rate is expressed for 1 hour."],
+["A car uses 8 gallons of gas to travel 240 miles.","Rate","It compares gallons and miles; neither quantity is 1."],
+["A store charges $0.40 per pencil.","Unit rate","The price is given for 1 pencil."],
+["A student reads 25 pages.","Neither","This gives a page count only."],
+["A factory makes 450 toys in 9 hours.","Rate","It compares toys and hours, with 9 hours rather than 1."],
+["A dog eats 2 cups of food per day.","Unit rate","The amount is given for 1 day."],
+["A tree is 8 meters tall.","Neither","This gives a height only."],
+["A boat travels 84 miles in 3 hours.","Rate","It compares miles and hours, with 3 hours rather than 1."],
+["A student solves 3 problems per minute.","Unit rate","The rate is expressed for 1 minute."],
+["A bag weighs 5 pounds.","Neither","This gives a weight only."],
+["A package contains 18 ounces of cereal for $4.50.","Rate","It compares ounces and dollars; neither quantity is 1."],
+["A bottle costs $1.25 each.","Unit rate","The price is for 1 bottle."],
+["A book has 240 pages.","Neither","This gives a page count only."],
+["A classroom has 28 students sitting at 4 tables.","Rate","It compares students and tables, with 4 tables rather than 1."],
+["A bag contains 6 apples per dollar.","Unit rate","The rate is expressed for 1 dollar."],
+["A swimming pool holds 10,000 gallons.","Neither","This gives capacity only."],
+["A baker makes 36 cookies in 3 hours.","Rate","It compares cookies and hours, with 3 hours rather than 1."],
+["A runner travels 5 meters per second.","Unit rate","The rate is expressed for 1 second."],
+["A student earns $20.","Neither","This gives an amount of money only."],
+["A water tank fills 48 gallons in 6 minutes.","Rate","It compares gallons and minutes, with 6 minutes rather than 1."],
+["A machine makes 8 parts per minute.","Unit rate","The rate is expressed for 1 minute."],
+["A car travels 100 miles in 1 hour.","Unit rate","The time is exactly 1 hour."],
+["A student reads 60 pages in 1 minute.","Unit rate","The time is exactly 1 minute."],
+["A bottle costs $5 for 1 bottle.","Unit rate","The price is given for 1 bottle."],
+["A runner travels 400 meters in 1 second.","Unit rate","The time is exactly 1 second."],
+["A recipe uses 1 cup of milk for 1 batch.","Unit rate","The amount is given for 1 batch."],
+["A worker earns $80 for 8 hours.","Rate","It compares dollars and hours, with 8 hours rather than 1."],
+["A car travels 150 miles in 2.5 hours.","Rate","It compares miles and hours, with 2.5 hours rather than 1."],
+["A student reads 18 pages in 0.5 hours.","Rate","It compares pages and hours, with 0.5 hours rather than 1."],
+["A machine makes 200 parts in 0.25 hours.","Rate","It compares parts and hours, with 0.25 hours rather than 1."],
+["A store sells 2 pounds of apples for $3.50.","Rate","It compares pounds and dollars; neither quantity is 1."],
+["A cyclist rides 12 miles in 30 minutes.","Rate","It compares miles and minutes, with 30 minutes rather than 1."],
+["A runner travels 1 kilometer in 4 minutes.","Rate","It compares kilometers and minutes; the second quantity is 4, not 1."],
+["A car travels 90 miles in 1.5 hours.","Rate","It compares miles and hours, with 1.5 hours rather than 1."],
+["A worker earns $120 for 10 hours.","Rate","It compares dollars and hours, with 10 hours rather than 1."],
+["A printer produces 75 pages in 2.5 minutes.","Rate","It compares pages and minutes, with 2.5 minutes rather than 1."],
+["A car travels 65 miles per hour.","Unit rate","The rate is expressed for 1 hour."],
+["A student reads 90 pages in 5 days.","Rate","It compares pages and days, with 5 days rather than 1."],
+["A runner travels 3 miles per hour.","Unit rate","The rate is expressed for 1 hour."],
+["A student reads 45 pages in 1.5 hours.","Rate","It compares pages and hours, with 1.5 hours rather than 1."],
+["A cyclist travels 30 miles per hour.","Unit rate","The rate is expressed for 1 hour."],
+["A printer produces 120 pages in 4 minutes.","Rate","It compares pages and minutes, with 4 minutes rather than 1."],
+["A machine makes 12 parts per minute.","Unit rate","The rate is expressed for 1 minute."]
+];
+let order=data.map((_,i)=>i), index=0, answers={};
+const $=id=>document.getElementById(id);
+function render(){
+ const item=data[order[index]], selected=answers[index];
+ $("count").textContent=`Question ${index+1} of ${order.length}`;
+ $("score").textContent=`Score: ${Object.keys(answers).filter(k=>answers[k]===data[order[Number(k)]][1]).length}/${Object.keys(answers).length}`;
+ $("fill").style.width=((index+1)/order.length*100)+"%";
+ $("prompt").textContent=item[0];
+ document.querySelectorAll("[data-answer]").forEach(b=>{b.disabled=!!selected;b.style.outline=selected&&b.dataset.answer===selected?"3px solid #1d4ed8":"";});
+ const f=$("feedback"); f.className="feedback";
+ if(selected){const correct=selected===item[1];f.classList.add(correct?"good":"bad");f.innerHTML=`<strong>${correct?"Correct! ✓":"Not quite."}</strong> ${item[2]} <br><strong>Answer: ${item[1]}</strong>`;}
+ else f.textContent="Choose an answer to see feedback.";
+ $("prev").disabled=index===0;$("next").textContent=index===order.length-1?"Finish / Results":"Next Question →";
+}
+document.querySelectorAll("[data-answer]").forEach(b=>b.addEventListener("click",()=>{if(answers[index])return;answers[index]=b.dataset.answer;render();}));
+$("prev").onclick=()=>{if(index>0){index--;render();}};
+$("next").onclick=()=>{if(index<order.length-1){index++;render();}else{const right=Object.keys(answers).filter(k=>answers[k]===data[order[Number(k)]][1]).length;$("feedback").className="feedback good";$("feedback").innerHTML=`<strong>Activity complete!</strong> You answered ${right} out of ${Object.keys(answers).length} attempted questions correctly. Review missed questions or reset to try again.`;}};
+$("reset").onclick=()=>{index=0;answers={};render();};
+$("shuffle").onclick=()=>{for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]];}index=0;answers={};render();};
+$("togglekey").onclick=()=>{const k=$("answerkey");k.classList.toggle("show");$("togglekey").textContent=k.classList.contains("show")?"Hide Answer Key":"Show Answer Key";if(k.innerHTML===""){k.innerHTML=data.map((d,i)=>`<div class="keyrow"><strong>${i+1}. ${d[1]}</strong> ${escapeHtml(d[0])}<br><span>${escapeHtml(d[2])}</span></div>`).join("");}};
+function escapeHtml(s){return s.replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");}
+render();
+</script></body></html>
